@@ -1,9 +1,17 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_costumeshop/pages/account_page.dart';
 import 'package:flutter_costumeshop/pages/catalog_page.dart';
 import 'package:flutter_costumeshop/pages/real_home_page.dart';
+import 'package:provider/provider.dart';
 
-void main() {
+import 'auth/auth_service.dart';
+import 'auth/auth_widget.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -13,10 +21,19 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: MyHomePage(),
-    );
+    return MultiProvider(
+        providers: [
+          Provider<AuthService>(
+              create: (_) => AuthService(FirebaseAuth.instance)),
+          StreamProvider(
+              create: ((context) =>
+                  context.read<AuthService>().authStateChanges),
+              initialData: null)
+        ],
+        child: const MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: AuthentificationWrapper(),
+        ));
   }
 }
 
@@ -53,5 +70,19 @@ class _MyHomePageState extends State<MyHomePage> {
             BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
           ]),
     );
+  }
+}
+
+class AuthentificationWrapper extends StatelessWidget {
+  const AuthentificationWrapper({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final firebaseUser = context.watch<User?>();
+
+    if (firebaseUser != null) {
+      return MyHomePage();
+    }
+    return AuthWidget();
   }
 }

@@ -20,11 +20,11 @@ class _RealHomePageState extends State<RealHomePage> {
     Timer.periodic(Duration(seconds: 4), (timer) {
       if (pageController.page! >= pageCount - 1) {
         pageController.animateToPage(0,
-            duration: Duration(milliseconds: 1000),
+            duration: Duration(milliseconds: 2000),
             curve: Curves.fastLinearToSlowEaseIn);
       } else {
         pageController.nextPage(
-            duration: Duration(milliseconds: 1000),
+            duration: Duration(milliseconds: 2000),
             curve: Curves.fastLinearToSlowEaseIn);
       }
     });
@@ -105,17 +105,9 @@ class NewProductCard extends StatelessWidget {
       width: MediaQuery.of(context).size.width - 20,
       decoration: BoxDecoration(
         image:
-            DecorationImage(image: AssetImage(productImage), fit: BoxFit.cover),
+            DecorationImage(image: AssetImage(productImage), fit: BoxFit.fill),
         borderRadius: BorderRadius.circular(20),
         color: Colors.white,
-        boxShadow: const [
-          BoxShadow(
-              color: Colors.grey,
-              offset: Offset(1.5, 1.5),
-              blurRadius: 5,
-              blurStyle: BlurStyle.normal,
-              spreadRadius: 0.5)
-        ],
       ),
     );
   }
